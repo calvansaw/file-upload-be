@@ -1,15 +1,26 @@
 const fileProcessing = require("./fileProcessing");
 const utils = require("./utils");
+const fileList = require("./fileList");
 
-const FILE_URL = "/upload";
+const UPLOAD_URL = "/upload";
+const FILE_URL = "/files";
+const PUBLIC_URL = "/public";
 
 const handler = async (event) => {
   console.log("event: ", event);
   let response;
   switch (true) {
-    case event.httpMethod === "PUT" && event.path === FILE_URL:
+    case event.httpMethod === "PUT" && event.path === UPLOAD_URL:
       response = await fileProcessing.process(JSON.parse(event.body));
       break;
+    case event.httpMethod === "GET" && event.path === FILE_URL:
+      response = await fileList.getFiles(JSON.parse(event.body), false);
+      break;
+    case event.httpMethod === "GET" && event.path === PUBLIC_URL:
+      response = await fileList.getFiles(JSON.parse(event.body), true);
+      break;
+    // case event.httpMethod === "POST" && event.path === FILE_URL:
+    //   response = await fileList.saveFile(JSON.parse(event.body));
 
     default:
       response = utils.buildResponse(404);
