@@ -10,6 +10,7 @@ const handler = async (event) => {
   console.log("event: ", event);
   let response;
   switch (true) {
+    case event.httpMethod === "POST" && event.path === UPLOAD_URL:
     case event.httpMethod === "PUT" && event.path === UPLOAD_URL:
       response = await fileProcessing.process(JSON.parse(event.body));
       break;
@@ -21,7 +22,9 @@ const handler = async (event) => {
       break;
     // case event.httpMethod === "POST" && event.path === FILE_URL:
     //   response = await fileList.saveFile(JSON.parse(event.body));
-
+    case event.httpMethod === "OPTIONS":
+      response = utils.buildResponse(200);
+      break;
     default:
       response = utils.buildResponse(404);
   }
