@@ -33,13 +33,15 @@ const getFiles = async (eventBody, isPublic) => {
   console.log("getFiles: isPublic ?", isPublic);
   const params = {
     TableName: DYNAMO_TABLE,
-    FilterExpression: "#pub = :pub",
-    ExpressionAttributeNames: {
-      "#pub": "public",
-    },
-    ExpressionAttributeValues: {
-      ":pub": isPublic,
-    },
+    ...(isPublic && {
+      FilterExpression: "#pub = :pub",
+      ExpressionAttributeNames: {
+        "#pub": "public",
+      },
+      ExpressionAttributeValues: {
+        ":pub": isPublic,
+      },
+    }),
   };
   const allFiles = await scanDynamo(params, []);
   const fileUrls = [];
